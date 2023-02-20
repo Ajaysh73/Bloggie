@@ -8,7 +8,7 @@ namespace Bloggie.Web.Repositories
         Task<BlogPost> GetAsync(Guid id);
         Task<BlogPost> AddAsync(BlogPost blogPost);
         Task<BlogPost> UpdateAsync(BlogPost blogPost);
-        Task<Boolean> UpdateDelete(Guid id);
+        Task<bool> DeleteAsync(Guid id);
 
     }
 }
