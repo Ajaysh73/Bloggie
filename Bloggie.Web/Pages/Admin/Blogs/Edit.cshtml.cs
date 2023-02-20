@@ -1,5 +1,5 @@
-using Bloggie.Web.Data;
 using Bloggie.Web.Models.Domain;
+using Bloggie.Web.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,47 +7,35 @@ namespace Bloggie.Web.Pages.Admin.Blogs
 {
     public class EditModel : PageModel
     {
-        public BloggieDbContext bloggieDbContext { get; set; }
+        private readonly IBlogPostRepository blogPostRepository;
+
         [BindProperty]
         public BlogPost BlogPost { get; set; }
-        public EditModel(BloggieDbContext bloggieDbContext)
+
+
+        public EditModel(IBlogPostRepository blogPostRepository)
         {
-            this.bloggieDbContext = bloggieDbContext;
+            this.blogPostRepository = blogPostRepository;
         }
 
-
-
-        public void OnGet(Guid id)
+        public async Task OnGet(Guid id)
         {
-            BlogPost = bloggieDbContext.BlogPosts.Find(id);
+            BlogPost = await blogPostRepository.GetAsync(id);
         }
         public async Task<IActionResult> OnPostEdit()
         {
-            var blogPost = bloggieDbContext.BlogPosts.Find(BlogPost.Id);
-            if (blogPost != null)
-            {
-                blogPost.Heading = BlogPost.Heading;
-                blogPost.PageTitle = BlogPost.PageTitle;
-                blogPost.Content = BlogPost.Content;
-                blogPost.ShortDescription = BlogPost.ShortDescription;
-                blogPost.FeaturedImageUrl = BlogPost.FeaturedImageUrl;
-                blogPost.UrlHandle = BlogPost.UrlHandle;
-                blogPost.PublishedDate = BlogPost.PublishedDate;
-                blogPost.Author = BlogPost.Author;
-                blogPost.Visible = BlogPost.Visible;
-            }
-            await bloggieDbContext.SaveChangesAsync();
+            var blogPost = await blogPostRepository.UpdateAsync(BlogPost);
             return RedirectToPage("/Admin/Blogs/List");
         }
         public async Task<IActionResult> OnPostDelete()
         {
-            var blogPost = await bloggieDbContext.BlogPosts.FindAsync(BlogPost.Id);
-            if (blogPost != null)
+            bool success = await blogPostRepository.DeleteAsync(BlogPost.Id);
+            if (success)
             {
-                bloggieDbContext.BlogPosts.Remove(blogPost);
+                return RedirectToPage("/Admin/Blogs/List");
             }
-            await bloggieDbContext.SaveChangesAsync();
-            return RedirectToPage("/Admin/Blogs/List");
+            return Page();
+
         }
     }
 }

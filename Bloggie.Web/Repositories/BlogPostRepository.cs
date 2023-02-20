@@ -26,7 +26,8 @@ namespace Bloggie.Web.Repositories
 
         async Task<BlogPost> IBlogPostRepository.GetAsync(Guid id)
         {
-            return await bloggieDbContext.BlogPosts.FindAsync(id);
+            var blogPost = await bloggieDbContext.BlogPosts.FindAsync(id);
+            return blogPost;
         }
 
         async Task<BlogPost> IBlogPostRepository.UpdateAsync(BlogPost blogPost)
