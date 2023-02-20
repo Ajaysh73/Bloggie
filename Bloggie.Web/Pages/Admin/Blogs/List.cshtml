@@ -9,23 +9,31 @@
     </div>
 </div>
 
-<div class="container">
-    <table class="table">
-        <thead>
-            <tr>
-                <td>Id</td>
-                <td>Heading</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var blogPost in Model.BlogPosts)
-            {
+@if (Model.BlogPosts != null)
+{
+    <div class="container">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@blogPost.Id</td>
-                    <td>@blogPost.Heading</td>
+                    <td>Id</td>
+                    <td>Heading</td>
                 </tr>
-            }
-        </tbody>
-    </table>
-
-</div>
+            </thead>
+            <tbody>
+                @foreach (var blogPost in Model.BlogPosts)
+                {
+                    <tr>
+                        <td>@blogPost.Id</td>
+                        <td>@blogPost.Heading</td>
+                        <td><a href="/Admin/Blogs/Edit/@blogPost.Id">View</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+} else
+    {
+        <div class="container">
+            <p>There are no blog posts.</p>
+        </div>
+    }
