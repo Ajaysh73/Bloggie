@@ -1,6 +1,8 @@
 using Bloggie.Web.Models.Domain;
+using Bloggie.Web.Models.ViewModels;
 using Bloggie.Web.Repositories;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text.Json;
 
 namespace Bloggie.Web.Pages.Admin.Blogs
 {
@@ -18,6 +20,16 @@ namespace Bloggie.Web.Pages.Admin.Blogs
 
         public async Task OnGet()
         {
+            var notification = TempData["Notification"];
+            if (notification != null)
+            {
+                ViewData["Notification"] = JsonSerializer.Deserialize<Notification>(notification.ToString());
+            }
+            //var messageDescription = (string)TempData["MessageDescription"];
+            //if (!string.IsNullOrWhiteSpace(messageDescription))
+            //{
+            //    ViewData["MessageDescription"] = messageDescription;
+            //}
             BlogPosts = (await blogPostRepository.GetAllAsync()).ToList();
         }
     }

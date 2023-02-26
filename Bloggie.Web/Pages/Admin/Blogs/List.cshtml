@@ -9,6 +9,22 @@
     </div>
 </div>
 
+@*@{
+    var messageDescription = (string)ViewData["MessageDescription"];
+
+    if (!string.IsNullOrWhiteSpace(messageDescription))
+    {
+        <div class="container mb-5">
+            <div class="alert alert-success alert-dismissible fade show mb-5" role="alert">
+                @Html.Raw(messageDescription)
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+        </div>
+
+    }
+}*@
+<partial name="_Notification" />
 @if (Model.BlogPosts.Count != 0)
 {
     <div class="container">
@@ -31,9 +47,10 @@
             </tbody>
         </table>
     </div>
-} else
-    {
-        <div class="container">
-            <p>There are no blog posts.</p>
-        </div>
-    }
+}
+else
+{
+    <div class="container">
+        <p>There are no blog posts.</p>
+    </div>
+}
