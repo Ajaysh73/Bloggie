@@ -11,5 +11,11 @@ namespace Bloggie.Web.Controllers
         {
             return Ok("This is images GET method");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadAsync(IFormFile file)
+        {
+
+        }
     }
 }
