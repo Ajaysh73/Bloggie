@@ -1,3 +1,5 @@
+
+
 using Bloggie.Web.Data;
 using Bloggie.Web.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +11,18 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<BloggieDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("BloggieDbConnectionString")));
+ options.UseSqlServer(
+     builder.Configuration.GetConnectionString("BloggieDbConnectionString")));
 
-// add repository interface
+
+
+
+
+
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepositoryCloudinary>();
+builder.Services.AddScoped<ITagRepository, TagRepository>();
+
 
 var app = builder.Build();
 
@@ -29,9 +39,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
 
 app.Run();
+

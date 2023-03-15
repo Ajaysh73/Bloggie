@@ -10,20 +10,7 @@
     </div>
 
 <partial name="_Notification" />
-@*@{
-    var messageDescription = (string)ViewData["MessageDescription"];
 
-        if (!string.IsNullOrWhiteSpace(messageDescription)){
-            <div class="container">
-                        <div class="alert alert-success alert-dismissible fade show mb-5" role="alert">
-                            @Html.Raw(messageDescription)
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-
-            </div>
-
-            }
-    }*@
 @if (Model.BlogPost != null)
 {
     <div>
@@ -50,6 +37,18 @@
                     <input type="text" class="form-control" id="shortDescription" asp-for="BlogPost.ShortDescription">
                 </div>
                 <div class="mb-3">
+                    <label for="featuredImageUpload" class="form-label">Featured Image Upload</label>
+                    <input type="file" id="featuredImageUpload" asp-for="FeaturedImage" />
+                    @if (Model.BlogPost.FeaturedImageUrl != null)
+                    {
+                        <img src="@Model.BlogPost.FeaturedImageUrl" id="featuredImageDisplay" style="display:block; width:300px;" />
+                    }
+                    else
+                    {
+                        <img src="" id="featuredImageDisplay" style="display:none; width:300px;" />
+                    }
+                </div>
+                <div class="mb-3">
                     <label for="featuredImageUrl" class="form-label">Featured Image Url</label>
                     <input type="text" class="form-control" id="featuredImageUrl" asp-for="BlogPost.FeaturedImageUrl">
                 </div>
@@ -65,8 +64,12 @@
                     <label for="author" class="form-label">Author</label>
                     <input type="text" class="form-control" id="author" asp-for="BlogPost.Author">
                 </div>
+                <div class="mb-3">
+                    <label for="tags" class="form-label">Tags (comma seperated)</label>
+                    <input type="text" class="form-control" id="tags" asp-for="Tags">
+                </div>
                 <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" value="" id="isVisible" asp-for="BlogPost.Visible">
+                    <input class="form-check-input" type="checkbox" id="isVisible" asp-for="BlogPost.Visible">
                     <label class="form-check-label" for="isVisible">
                         Is Visible
                     </label>
@@ -88,6 +91,30 @@ else
 }
 @section Scripts {
     <script>
-        var editor = new FroalaEditor('#content');
+        var editor = new FroalaEditor('#content', {
+            imageUploadURL: '/api/images'
+        });
+        const featuredImageUploadElement = document.getElementById('featuredImageUpload');
+        const featuredImageUrl = document.getElementById('featuredImageUrl');
+        const featuredImageDisplay = document.getElementById('featuredImageDisplay');
+        async function uploadFeaturedImage(e) {
+            console.log(e.target.files[0]);
+            let data = new FormData();
+            data.append('file', e.target.files[0]);
+            await fetch('/api/images', {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*',
+                },
+                body: data
+            }).then(response => response.json())
+                .then(result => {
+                    console.log(result);
+                    featuredImageUrl.value = result.link;
+                    featuredImageDisplay.style.display = 'block';
+                    featuredImageDisplay.src = result.link;
+                });
+        }
+        featuredImageUpload.addEventListener('change', uploadFeaturedImage);
     </script>
 }

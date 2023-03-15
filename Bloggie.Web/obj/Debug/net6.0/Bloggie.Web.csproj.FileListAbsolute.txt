@@ -85,3 +85,5 @@ C:\Users\ajays\Learning\COREBlogProj\Bloggie\Bloggie\Bloggie.Web\bin\Debug\net6.
 C:\Users\ajays\Learning\COREBlogProj\Bloggie\Bloggie\Bloggie.Web\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
 C:\Users\ajays\Learning\COREBlogProj\Bloggie\Bloggie\Bloggie.Web\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 C:\Users\ajays\Learning\COREBlogProj\Bloggie\Bloggie\Bloggie.Web\obj\Debug\net6.0\Bloggie.Web.csproj.CopyComplete
+C:\Users\ajays\Learning\COREBlogProj\Bloggie\Bloggie\Bloggie.Web\bin\Debug\net6.0\CloudinaryDotNet.dll
+C:\Users\ajays\Learning\COREBlogProj\Bloggie\Bloggie\Bloggie.Web\bin\Debug\net6.0\Newtonsoft.Json.dll

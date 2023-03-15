@@ -21,18 +21,24 @@ namespace Bloggie.Web.Repositories
 
         async Task<IEnumerable<BlogPost>> IBlogPostRepository.GetAllAsync()
         {
-            return await bloggieDbContext.BlogPosts.ToListAsync();
+            return await bloggieDbContext.BlogPosts.Include(nameof(BlogPost.Tags)).ToListAsync();
+        }
+        async Task<IEnumerable<BlogPost>> IBlogPostRepository.GetAllAsync(string tagName)
+        {
+            return await (bloggieDbContext.BlogPosts.Include(nameof(BlogPost.Tags))
+                .Where(x => x.Tags.Any(x => x.Name == tagName)))
+                .ToListAsync();
         }
 
         async Task<BlogPost> IBlogPostRepository.GetAsync(Guid id)
         {
-            var blogPost = await bloggieDbContext.BlogPosts.FindAsync(id);
+            var blogPost = await bloggieDbContext.BlogPosts.Include(nameof(BlogPost.Tags)).FirstOrDefaultAsync(x => x.Id == id);
             return blogPost;
         }
 
         async Task<BlogPost> IBlogPostRepository.UpdateAsync(BlogPost blogPost)
         {
-            var existingBlogPost = await bloggieDbContext.BlogPosts.FindAsync(blogPost.Id);
+            var existingBlogPost = await bloggieDbContext.BlogPosts.Include(nameof(BlogPost.Tags)).FirstOrDefaultAsync(x => x.Id == blogPost.Id);
             if (existingBlogPost != null)
             {
                 existingBlogPost.Heading = blogPost.Heading;
@@ -44,6 +50,16 @@ namespace Bloggie.Web.Repositories
                 existingBlogPost.PublishedDate = blogPost.PublishedDate;
                 existingBlogPost.Author = blogPost.Author;
                 existingBlogPost.Visible = blogPost.Visible;
+            }
+            if (blogPost.Tags != null && blogPost.Tags.Any())
+            {
+                //Delete existing Tags
+                bloggieDbContext.Tags.RemoveRange(existingBlogPost.Tags);
+
+                // Add new Tags
+                blogPost.Tags.ToList().ForEach(x => x.BlogPostId = existingBlogPost.Id);
+                await bloggieDbContext.Tags.AddRangeAsync(blogPost.Tags);
+
             }
             await bloggieDbContext.SaveChangesAsync();
             return existingBlogPost;
@@ -59,6 +75,11 @@ namespace Bloggie.Web.Repositories
                 return true;
             }
             return false;
+        }
+
+        public async Task<BlogPost> GetAsync(string urlHandle)
+        {
+            return await bloggieDbContext.BlogPosts.Include(nameof(BlogPost.Tags)).FirstOrDefaultAsync(x => x.UrlHandle == urlHandle);
         }
     }
 }
